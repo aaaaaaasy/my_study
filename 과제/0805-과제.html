@@ -1,0 +1,711 @@
+html_content = """<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <title>감정 일기장</title>
+  <style>
+:root {
+  --bg: #f9f9f9;
+  --panel: #ffffff;
+  --text: #333333;
+  --subtext: #888888;
+  --line: #eeeeee;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+
+  --happy: #ffeaa7;
+  --sad: #74b9ff;
+  --blue: #81ecec;
+  --purple: #a29bfe;
+  --gray: #dfe6e9;
+  --pink: #fab1a0;
+
+  --accent: #0984e3;
+  --accent-dark: #00cec9;
+  --button: #2d3436;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+.page {
+  width: min(100%, 1000px);
+  margin: 0 auto;
+  padding: 30px 20px 80px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 25px;
+  border-bottom: 2px solid var(--line);
+  padding-bottom: 15px;
+}
+
+.topbar div {
+  font-weight: 800;
+  font-size: 24px;
+  color: var(--button);
+}
+
+.topbar div::before {
+  content: "📖 ";
+}
+
+.topbar small {
+  color: var(--subtext);
+  font-weight: 500;
+  font-size: 14px;
+}
+
+/* ===== 배너: 깔끔한 디자인 ===== */
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40px;
+  border-radius: 20px;
+  background-color: #fff;
+  box-shadow: var(--shadow);
+  margin-bottom: 35px;
+}
+
+.banner-copy {
+  max-width: 60%;
+}
+
+.banner-copy h1 {
+  margin: 0 0 15px;
+  font-size: 28px;
+  color: var(--text);
+}
+
+.banner-copy p {
+  margin: 0;
+  color: var(--subtext);
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+.banner-badge {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background-color: var(--accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.banner-illustration {
+  font-size: 80px;
+  opacity: 0.8;
+}
+
+.section {
+  margin-bottom: 40px;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.section-head h2 {
+  margin: 0;
+  font-size: 22px;
+  color: var(--button);
+}
+
+.section-head p {
+  margin: 5px 0 0;
+  color: var(--subtext);
+  font-size: 14px;
+}
+
+/* ===== 탭: 심플한 스타일 ===== */
+.tabs {
+  display: flex;
+  gap: 10px;
+}
+
+.tab {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 16px;
+  background: #fff;
+  color: var(--subtext);
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab.active {
+  background: var(--button);
+  color: #fff;
+  border-color: var(--button);
+}
+
+.filters {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filter-btn,
+.link-btn,
+.form-btn,
+.mini-btn {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 16px;
+  background: #fff;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.filter-btn.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+/* ===== 툴바 ===== */
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding: 15px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 8px 15px;
+  width: 300px;
+}
+
+.search-box input {
+  width: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+}
+
+.diary-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+/* ===== 카드 디자인 ===== */
+.diary-card {
+  position: relative;
+  border-radius: 16px;
+  background: #fff;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-top: 4px solid var(--gray);
+}
+
+.diary-card.행복 { border-top-color: var(--happy); }
+.diary-card.슬픔 { border-top-color: var(--sad); }
+.diary-card.우울 { border-top-color: var(--blue); }
+.diary-card.기타 { border-top-color: var(--pink); }
+
+
+.diary-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
+
+.delete-icon {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: var(--subtext);
+  transition: color 0.2s;
+}
+
+.delete-icon:hover {
+  color: #e74c3c;
+}
+
+.diary-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.diary-mood {
+  font-size: 24px;
+}
+
+.diary-date {
+  font-size: 13px;
+  color: var(--subtext);
+}
+
+.diary-card h3 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  color: var(--text);
+}
+
+.diary-card p {
+  margin: 0;
+  color: var(--subtext);
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  background: #fff;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  padding: 40px;
+  text-align: center;
+  color: var(--subtext);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  align-items: start;
+}
+
+.form-panel,
+.detail-panel {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 25px;
+}
+
+.form-fields {
+  display: grid;
+  gap: 20px;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--button);
+}
+
+.field input[type="text"],
+.field textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px 15px;
+  outline: none;
+  background: var(--bg);
+  transition: border-color 0.2s;
+}
+
+.field input[type="text"]:focus,
+.field textarea:focus {
+  border-color: var(--accent);
+}
+
+.field textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.mood-group {
+  display: flex;
+  gap: 15px;
+}
+
+.mood-option {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.form-btn {
+  background: var(--button);
+  color: #fff;
+  font-weight: 600;
+  padding: 15px;
+  border: none;
+  margin-top: 10px;
+}
+
+.form-btn:hover {
+  background: #000;
+}
+
+.detail-box {
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+  min-height: 200px;
+}
+
+.detail-box h3 {
+  margin: 0 0 15px;
+  font-size: 20px;
+}
+
+.detail-meta {
+  display: flex;
+  justify-content: space-between;
+  color: var(--subtext);
+  font-size: 13px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.detail-content {
+  line-height: 1.7;
+  color: var(--text);
+  white-space: pre-wrap;
+  font-size: 15px;
+}
+
+.detail-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.mini-btn.primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.mini-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.footer-note {
+  margin-top: 50px;
+  text-align: center;
+  color: var(--subtext);
+  font-size: 13px;
+}
+
+@media (max-width: 768px) {
+  .banner, .form-grid { grid-template-columns: 1fr; }
+  .toolbar { flex-direction: column; gap: 15px; align-items: stretch; }
+  .search-box { width: 100%; }
+}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <div>감정 일기장</div>
+      <small>당신의 하루를 기록하세요</small>
+    </div>
+
+    <section class="banner">
+      <div class="banner-copy">
+        <h1>오늘 하루는 어땠나요?</h1>
+        <p>감정을 색깔과 함께 간단히 기록해보세요.<br>매일매일 쌓이는 감정의 변화를 살펴볼 수 있습니다.</p>
+        <div class="banner-badge">기록 시작하기</div>
+      </div>
+      <div class="banner-illustration" aria-hidden="true">🌱</div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>메뉴</h2>
+        </div>
+        <div class="tabs">
+          <a class="tab active" href="#diary-list-area">목록 보기</a>
+          <a class="tab" href="#register-area">일기 쓰기</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="diary-list-area">
+      <div class="toolbar">
+        <div class="filters" id="filterButtons"></div>
+        <div class="search-box">
+          <span>🔍</span>
+          <input id="searchInput" type="text" placeholder="검색어를 입력하세요">
+        </div>
+      </div>
+
+      <div class="diary-list" id="diaryList"></div>
+    </section>
+
+    <section class="section" id="register-area">
+      <div class="section-head">
+        <h2>일기 작성 및 상세</h2>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-panel">
+          <form id="diaryForm">
+            <div class="form-fields">
+              <div class="field">
+                <label>기분 선택</label>
+                <div class="mood-group">
+                  <label class="mood-option"><input type="radio" name="mood" value="행복" checked> 😄 행복</label>
+                  <label class="mood-option"><input type="radio" name="mood" value="슬픔"> 😢 슬픔</label>
+                  <label class="mood-option"><input type="radio" name="mood" value="우울"> 😶 우울</label>
+                  <label class="mood-option"><input type="radio" name="mood" value="기타"> 🤔 기타</label>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="titleInput">제목</label>
+                <input id="titleInput" type="text" placeholder="오늘의 핵심 단어나 문장" required>
+              </div>
+
+              <div class="field">
+                <label for="contentInput">내용</label>
+                <textarea id="contentInput" placeholder="자유롭게 적어보세요..." required></textarea>
+              </div>
+
+              <button class="form-btn" id="submitButton" type="submit">저장하기</button>
+            </div>
+          </form>
+        </div>
+
+        <section class="detail-panel" id="detail-area">
+          <div class="detail-box" id="detailBox">
+            <h3>선택된 일기가 없습니다.</h3>
+            <p class="detail-content">목록에서 일기를 클릭하여 상세 내용을 확인하세요.</p>
+          </div>
+
+          <div class="detail-actions">
+            <button class="mini-btn primary" id="editButton" type="button" disabled>수정</button>
+            <button class="mini-btn" id="clearButton" type="button">선택 취소</button>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <p class="footer-note">감정 일기장은 브라우저 저장소를 사용하여 데이터를 안전하게 보관합니다.</p>
+  </div>
+
+  <script>
+const STORAGE_KEY = "emotionDiaryVersion2";
+const moods = ["전체", "행복", "슬픔", "우울", "기타"];
+
+let diaryListData = [];
+let currentFilter = "전체";
+let currentSearch = "";
+let selectedDiaryId = null;
+let editingDiaryId = null;
+
+const diaryList = document.getElementById("diaryList");
+const filterButtons = document.getElementById("filterButtons");
+const diaryForm = document.getElementById("diaryForm");
+const titleInput = document.getElementById("titleInput");
+const contentInput = document.getElementById("contentInput");
+const submitButton = document.getElementById("submitButton");
+const detailBox = document.getElementById("detailBox");
+const editButton = document.getElementById("editButton");
+const clearButton = document.getElementById("clearButton");
+const searchInput = document.getElementById("searchInput");
+
+const loadDiaryList = () => {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  return saved ? JSON.parse(saved) : [];
+};
+
+const saveDiaryList = () => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(diaryListData));
+};
+
+const getMoodEmoji = (mood) => {
+  if (mood === "행복") return "😄";
+  if (mood === "슬픔") return "😢";
+  if (mood === "우울") return "😶";
+  return "🤔";
+};
+
+const getTodayText = () => {
+  const today = new Date();
+  return `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, "0")}.${String(today.getDate()).padStart(2, "0")}`;
+};
+
+const getSelectedMood = () => {
+  return document.querySelector('input[name="mood"]:checked').value;
+};
+
+const renderFilterButtons = () => {
+  filterButtons.innerHTML = moods.map(mood => 
+    `<button type="button" class="filter-btn ${mood === currentFilter ? 'active' : ''}" data-filter="${mood}">${mood}</button>`
+  ).join("");
+};
+
+const renderDiaryList = () => {
+  const visibleList = diaryListData.filter(diary => {
+    const matchFilter = currentFilter === "전체" || diary.mood === currentFilter;
+    const matchSearch = `${diary.title} ${diary.content}`.toLowerCase().includes(currentSearch.toLowerCase());
+    return matchFilter && matchSearch;
+  });
+
+  if (visibleList.length === 0) {
+    diaryList.innerHTML = `<div class="empty-state">작성된 일기가 없습니다.</div>`;
+    return;
+  }
+
+  diaryList.innerHTML = visibleList.map(diary => `
+    <article class="diary-card ${diary.mood}" onclick="showDiaryDetail(${diary.id})">
+      <button class="delete-icon" onclick="deleteDiary(${diary.id}, event)">✖</button>
+      <div class="diary-card-top">
+        <div class="diary-mood">${getMoodEmoji(diary.mood)}</div>
+        <div class="diary-date">${diary.createdAt}</div>
+      </div>
+      <h3>${diary.title}</h3>
+      <p>${diary.content.substring(0, 50)}${diary.content.length > 50 ? '...' : ''}</p>
+    </article>
+  `).join("");
+};
+
+const setDetailBox = (diary) => {
+  if (!diary) {
+    detailBox.innerHTML = `<h3>선택된 일기가 없습니다.</h3><p class="detail-content">목록에서 일기를 클릭하여 상세 내용을 확인하세요.</p>`;
+    editButton.disabled = true;
+    selectedDiaryId = null;
+    return;
+  }
+
+  detailBox.innerHTML = `
+    <h3>${diary.title}</h3>
+    <div class="detail-meta">
+      <span>${getMoodEmoji(diary.mood)} ${diary.mood}</span>
+      <span>${diary.createdAt}</span>
+    </div>
+    <div class="detail-content">${diary.content}</div>
+  `;
+  editButton.disabled = false;
+  selectedDiaryId = diary.id;
+};
+
+window.showDiaryDetail = (id) => {
+  const diary = diaryListData.find(item => item.id === id);
+  if (diary) setDetailBox(diary);
+};
+
+window.deleteDiary = (id, event) => {
+  event.stopPropagation();
+  diaryListData = diaryListData.filter(item => item.id !== id);
+  saveDiaryList();
+  renderDiaryList();
+  if (selectedDiaryId === id) setDetailBox(null);
+};
+
+editButton.addEventListener("click", () => {
+  const diary = diaryListData.find(item => item.id === selectedDiaryId);
+  if (diary) {
+    editingDiaryId = diary.id;
+    titleInput.value = diary.title;
+    contentInput.value = diary.content;
+    document.querySelector(`input[name="mood"][value="${diary.mood}"]`).checked = true;
+    submitButton.textContent = "수정하기";
+  }
+});
+
+clearButton.addEventListener("click", () => {
+  editingDiaryId = null;
+  submitButton.textContent = "저장하기";
+  setDetailBox(null);
+  diaryForm.reset();
+});
+
+diaryForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const newDiary = {
+    id: editingDiaryId || Date.now(),
+    mood: getSelectedMood(),
+    title: titleInput.value.trim(),
+    content: contentInput.value.trim(),
+    createdAt: getTodayText()
+  };
+
+  if (editingDiaryId) {
+    const index = diaryListData.findIndex(item => item.id === editingDiaryId);
+    diaryListData[index] = newDiary;
+    editingDiaryId = null;
+    submitButton.textContent = "저장하기";
+  } else {
+    diaryListData.unshift(newDiary);
+  }
+
+  saveDiaryList();
+  renderDiaryList();
+  setDetailBox(newDiary);
+  diaryForm.reset();
+});
+
+filterButtons.addEventListener("click", (e) => {
+  if (e.target.tagName === 'BUTTON') {
+    currentFilter = e.target.dataset.filter;
+    renderFilterButtons();
+    renderDiaryList();
+  }
+});
+
+searchInput.addEventListener("input", (e) => {
+  currentSearch = e.target.value;
+  renderDiaryList();
+});
+
+// 초기화
+diaryListData = loadDiaryList();
+renderFilterButtons();
+renderDiaryList();
+  </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>키보드 감지 실습</title>
+    <style>
+        .칸예 {
+            position: absolute;
+            top: 300px;
+            left: 300px;
+
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+    <script>
+
+        let 부스터 = 1.0;
+        window.addEventListener("keydown", (event) => {
+            const 칸예 = document.getElementById("칸예ID");
+            const 칸예스타일 = getComputedStyle(칸예)
+            const 칸예Y좌표 = Number(칸예스타일.top.replace("px", ""))
+            const 칸예X좌표 = Number(칸예스타일.left.replace("px", ""))
+
+            switch(event.key) {
+                case "ArrowUp": {
+                    // 칸예를 위로 -20 옮긴다
+                    document.getElementById("칸예ID").style = `top: ${(칸예Y좌표 - 30) / 부스터}px; left: ${칸예X좌표}px;`
+                    break;
+                }
+                case "ArrowDown": {
+                    // 칸예를 아래로 +20 옮긴다
+                    document.getElementById("칸예ID").style = `top: ${(칸예Y좌표 + 30) * 부스터 }px; left: ${칸예X좌표}px;`
+                    break;
+                }
+                case "ArrowLeft": {
+                    // 칸예를 왼쪽으로 -20 옮긴다
+                    document.getElementById("칸예ID").style = `top: ${칸예Y좌표}px; left: ${(칸예X좌표 - 30) / 부스터}px;`
+                    break;
+                }
+                case "ArrowRight": {
+                    // 칸예를 오른쪽으로 +20 옮긴다
+                    document.getElementById("칸예ID").style = `top: ${칸예Y좌표}px; left: ${(칸예X좌표 + 30) * 부스터}px;`
+                    break;
+                }
+                case "Shift": {
+                    부스터 = 2.0;
+                    break;
+                }
+            }
+
+        });
+    </script>
+</head>
+<body>  
+    <img src="./00-image.jpg" class="칸예" id="칸예ID" />
+</body>
+</html>

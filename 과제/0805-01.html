@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>Sungyong's Diary</title>
+    <!-- 구글 폰트 추가 (깔끔한 고딕체) -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 1. 기본 설정 (Reset & Base) */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans KR', sans-serif; /* 폰트 적용 */
+        }
+
+        body {
+            /* 기존 클래스명 .body 대신 body 태그에 직접 적용 */
+            background-color: #f5f7fa; /* 눈이 편안한 아주 연한 파스텔 블루/그레이 */
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* 2. 전체 페이지 레이아웃 (가운데 정렬 및 최대 너비 설정) */
+        .페이지 {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* 3. 헤더 및 배너 영역 */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .배너 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            font-weight: 500;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        /* 4. 네비게이션(메뉴) 영역 */
+        .메뉴영역 {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+
+        .메뉴영역 > div {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #718096;
+            border-radius: 8px;
+            transition: all 0.3s ease; /* 부드러운 호버 효과 */
+        }
+
+        .메뉴영역 > div:hover {
+            background-color: #edf2f7;
+            color: #2d3748;
+        }
+
+        .메뉴영역 .활성메뉴 {
+            background-color: #4299e1;
+            color: white;
+            box-shadow: 0 2px 4px rgba(66, 153, 225, 0.3);
+        }
+
+        /* 5. 메인 콘텐츠 영역 (Grid 레이아웃 적용) */
+        .일기목록영역 h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #2d3748;
+        }
+
+        .일기목록 {
+            display: grid;
+            /* 화면 크기에 맞춰 자동으로 카드가 바둑판 배열됨 */
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px; 
+        }
+
+        /* 6. 카드 UI 디자인 */
+        .카드 {
+            background-color: white;
+            border-radius: 16px;
+            overflow: hidden; /* 둥근 모서리 밖으로 삐져나가는 것 방지 */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        /* 카드 마우스 호버(올렸을 때) 애니메이션 효과 */
+        .카드:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .카드윗부분 {
+            height: 120px;
+            /* 이미지가 없다면 예쁜 그라데이션으로 대체 */
+            background: linear-gradient(120deg, #f6d365 0%, #fda085 100%); 
+        }
+        
+        .카드윗부분.슬픔 { background: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%); }
+        .카드윗부분.화남 { background: linear-gradient(120deg, #ff9a9e 0%, #fecfef 100%); }
+
+        .카드내용영역 {
+            padding: 20px;
+        }
+
+        .카드정보 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+        }
+
+        .감정태그 {
+            background-color: #edf2f7;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .날짜 {
+            color: #a0aec0;
+        }
+
+        .카드제목 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: #2d3748;
+            /* 제목이 길면 줄임표(...) 처리 */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .카드내용텍스트 {
+            font-size: 0.95rem;
+            color: #718096;
+            /* 두 줄 이상 넘어가면 줄임표 처리 */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="페이지">
+        
+        <!-- 헤더 영역 -->
+        <header>
+             <h1>Sungyong's Diary 📖</h1>
+             <div class="배너">오늘 하루는 어떤 일들이 있었나요? 소중한 순간을 기록해보세요.</div>
+        </header>
+
+        <!-- 네비게이션(메뉴) 영역 -->
+        <nav class="메뉴영역">
+            <div class="활성메뉴">📝 일기보관함</div>
+            <div>📸 사진보관함</div>
+            <div>⚙️ 설정</div>
+        </nav>
+
+        <!-- 메인 콘텐츠 영역 -->
+        <main class="큰영역">
+            <section class="일기목록영역">
+                <h2>최근 일기</h2>
+                
+                <div class="일기목록">
+                    <!-- 카드 1 -->
+                    <article class="카드">
+                        <div class="카드윗부분"></div>
+                        <div class="카드내용영역">
+                            <div class="카드정보">
+                                <span class="감정태그">😊 기뻐요</span>
+                                <span class="날짜">2026-08-06</span>
+                            </div>
+                            <h3 class="카드제목">오늘은 코딩이 잘 되는 날!</h3>
+                            <p class="카드내용텍스트">새로운 다이어리 페이지를 만들었다. 디자인이 너무 예쁘게 나와서 하루 종일 기분이 좋았다.</p>
+                        </div>
+                    </article>
+
+                    <!-- 카드 2 -->
+                    <article class="카드">
+                        <!-- 화남 클래스를 추가해 배경색 변경 -->
+                        <div class="카드윗부분 화남"></div> 
+                        <div class="카드내용영역">
+                            <div class="카드정보">
+                                <span class="감정태그">😡 화나요</span>
+                                <span class="날짜">2026-08-03</span>
+                            </div>
+                            <h3 class="카드제목">비가 갑자기 쏟아졌다</h3>
+                            <p class="카드내용텍스트">우산을 안 가져왔는데 비가 와서 옷이 다 젖어버렸다. 날씨 예보를 꼭 확인해야겠다.</p>
+                        </div>
+                    </article>
+
+                    <!-- 카드 3 -->
+                    <article class="카드">
+                        <div class="카드윗부분 슬픔"></div>
+                        <div class="카드내용영역">
+                            <div class="카드정보">
+                                <span class="감정태그">😢 슬퍼요</span>
+                                <span class="날짜">2026-08-01</span>
+                            </div>
+                            <h3 class="카드제목">아끼던 컵이 깨짐</h3>
+                            <p class="카드내용텍스트">제일 좋아하던 머그컵을 실수로 떨어뜨렸다. 내일 예쁜 컵을 새로 하나 사야겠다.</p>
+                        </div>
+                    </article>
+                </div>
+            </section>
+        </main>
+        
+    </div>
+</body>
+</html>
