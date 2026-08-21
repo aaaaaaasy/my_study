@@ -1,0 +1,143 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(3rem, 6vw, 4.5rem);
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: var(--font-size-3xl);
+  color: white;
+  letter-spacing: -0.05em;
+}
+
+/* ---------- Snapshot ---------- */
+.snapshot {
+  display: grid;
+  gap: 1.75rem;
+  padding: clamp(1.75rem, 3.5vw, 2.75rem);
+  border-radius: var(--radius-2xl);
+  background: #ffffff;
+  box-shadow: var(--shadow-md);
+}
+
+.snapshotHeader :global(.eyebrow) {
+  margin-bottom: 0.85rem;
+}
+
+.snapshotHeader :global(.section-title) {
+  margin: 0;
+  color: #1e0b33;
+}
+
+.snapshotGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.snapshotCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  padding: 1.35rem 1.1rem;
+  border-radius: var(--radius-lg);
+  background: #f7f5fb;
+  border: 1px solid rgb(124 58 237 / 0.1);
+  text-decoration: none;
+  transition: transform 160ms var(--ease-out), box-shadow 160ms var(--ease-out), background-color 160ms var(--ease-out);
+}
+
+.snapshotCard:hover {
+  transform: translateY(-3px);
+  background: rgb(124 58 237 / 0.08);
+  box-shadow: 0 12px 25px rgb(124 58 237 / 0.15);
+}
+
+.snapshotBadge {
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background: rgb(124 58 237 / 0.12);
+  color: #6d28d9;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+
+.snapshotCount {
+  color: #1e0b33;
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+}
+
+.snapshotLabel {
+  color: #6b7280;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+/* ---------- Principles ---------- */
+.principles {
+  display: grid;
+  gap: 1.75rem;
+}
+
+.principles :global(.section-title) {
+  margin: 0;
+  color: white;
+}
+
+.principleGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.principleCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: clamp(1.5rem, 3vw, 2rem);
+  border-radius: var(--radius-2xl);
+  background: #1a0b2e;
+  border: 1px solid rgb(167 139 250 / 0.15);
+}
+
+.principleIndex {
+  color: #7c3aed;
+  font-size: 0.85rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+}
+
+.principleCard strong {
+  color: white;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+}
+
+.principleCard p {
+  margin: 0;
+  color: #a1a1c2;
+  font-size: 0.88rem;
+  line-height: 1.7;
+  word-break: keep-all;
+}
+
+@media (max-width: 860px) {
+  .snapshotGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .principleGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .snapshotGrid {
+    grid-template-columns: 1fr;
+  }
+}
